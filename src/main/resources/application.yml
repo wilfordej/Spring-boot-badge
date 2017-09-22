@@ -1,0 +1,68 @@
+server:
+  port: 8080
+
+spring:
+  profiles:
+    active: @active-profile@
+
+DYNAMODB_TABLE_NAME: ps-dynamodb-spring-boot-microbadge
+
+logging:
+  level:
+    root: WARN
+    org:
+      springframework:
+        security: DEBUG
+        web: INFO
+      hibernate: WARN
+      apache:
+        commons:
+          dbcp2: DEBUG
+  pattern:
+#    console: '%d{yyyy-mm-dd HH:mm:ss.SSS} %-5level [%thread] --- %logger{15} : %msg%n'
+
+# https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-monitoring.html
+management:
+  security:
+    enabled: false
+  port: 9000
+
+# https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-endpoints.html
+endpoints:
+  enabled: false
+
+  health:
+    enabled: true
+    path: /healthcheck/heartbeat
+  info:
+    enabled: true
+  metrics:
+    enabled: true
+  loggers:
+    enabled: true
+
+info:
+  app:
+    name: @project.artifactId@
+    description: @project.description@
+    version: @project.version@
+
+---
+
+spring:
+  profiles: component-test
+
+url:
+  base: http://localhost:8080
+  test: http://localhost:8080
+  mgmt: http://localhost:9000
+
+---
+
+spring:
+  profiles: local-int
+
+url:
+  base: http://integration.familysearch.org
+  test: http://localhost:8080
+  mgmt: http://localhost:9000
