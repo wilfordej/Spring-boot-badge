@@ -1,15 +1,12 @@
-server:
-  port: 8080
-
 spring:
   profiles:
-    active: @active-profile@
+    include: ${FS_SYSTEM_NAME:local-int}
 
 DYNAMODB_TABLE_NAME: ps-dynamodb-spring-boot-microbadge
 
 logging:
   level:
-    root: WARN
+    root: INFO
     org:
       springframework:
         security: DEBUG
@@ -50,19 +47,10 @@ info:
 ---
 
 spring:
-  profiles: component-test
-
-url:
-  base: http://localhost:8080
-  test: http://localhost:8080
-  mgmt: http://localhost:9000
-
----
-
-spring:
   profiles: local-int
+
+dynamo:
+  db: local
 
 url:
   base: http://integration.familysearch.org
-  test: http://localhost:8080
-  mgmt: http://localhost:9000

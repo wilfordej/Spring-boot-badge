@@ -6,17 +6,19 @@ import org.springframework.http.ResponseEntity;
 
 import org.familysearch.spring.springbootmicrobadge.schema.Info;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class InfoTest extends BaseComponent {
 
   @Test
   public void getInfoTest() {
-    ResponseEntity<Info> appInfo = getRestTemplate().getForEntity(getInfoUrl(), Info.class);
-    assertEquals(HttpStatus.OK, appInfo.getStatusCode());
-    assertEquals("spring-boot-microbadge", appInfo.getBody().getInfoDetails().getName());
-    assertEquals("Demo project for Spring Boot", appInfo.getBody().getInfoDetails().getDescription());
-    assertEquals("0.0.1-SNAPSHOT", appInfo.getBody().getInfoDetails().getVersion());
+    ResponseEntity<Info> responseEntity = restTemplate.getForEntity(getInfoUrl(), Info.class);
+
+    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(responseEntity.getBody().getInfoDetails())
+      .hasFieldOrPropertyWithValue("name", "spring-boot-microbadge")
+      .hasFieldOrPropertyWithValue("description", "Demo project for Spring Boot")
+      .hasFieldOrPropertyWithValue("version", "0.0.1-SNAPSHOT");
   }
 
   private String getInfoUrl() {

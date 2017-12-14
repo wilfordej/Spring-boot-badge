@@ -2,7 +2,6 @@ package org.familysearch.spring.springbootmicrobadge.service;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.actuate.metrics.GaugeService;
 import org.springframework.stereotype.Component;
@@ -15,21 +14,22 @@ import org.familysearch.tf.jsonbind.dto.TfPerson;
 @Component
 public class PersonSummaryService {
 
-  private AtomicLong totalNumCalls = new AtomicLong();
-  private AtomicLong totalCacheHits = new AtomicLong();
+  private final AtomicLong totalNumCalls = new AtomicLong();
+  private final AtomicLong totalCacheHits = new AtomicLong();
+  private final TfPersonClient tfPersonClient;
+  private final PersonSummaryMapper personSummaryMapper;
+  private final PersonSummaryRepository repository;
+  private final GaugeService gaugeService;
 
-  @Autowired
-  TfPersonClient tfPersonClient;
-
-  @Autowired
-  PersonSummaryMapper personSummaryMapper;
-
-  @Autowired
-  PersonSummaryRepository repository;
-
-  @Autowired
-  @Qualifier("gaugeService")
-  GaugeService gaugeService;
+  public PersonSummaryService(TfPersonClient tfPersonClient,
+                              PersonSummaryMapper personSummaryMapper,
+                              PersonSummaryRepository repository,
+                              @Qualifier("gaugeService") GaugeService gaugeService) {
+    this.tfPersonClient = tfPersonClient;
+    this.personSummaryMapper = personSummaryMapper;
+    this.repository = repository;
+    this.gaugeService = gaugeService;
+  }
 
   public PersonSummary getOrCalculate(String personId) {
     totalNumCalls.incrementAndGet();

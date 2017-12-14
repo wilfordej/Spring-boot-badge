@@ -3,16 +3,17 @@ package org.familysearch.spring.springbootmicrobadge;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import org.familysearch.spring.springbootmicrobadge.client.UrlFactory;
-
 @Component
-public class UrlFactoryForTesting extends UrlFactory {
+public class UrlFactoryForTesting {
 
-  @Value("${url.test}")
-  private String testUrl;
+  private final String testUrl;
+  private final String mgmtUrl;
 
-  @Value("${url.mgmt}")
-  private String mgmtUrl;
+  public UrlFactoryForTesting(@Value("${url.test}") String testUrl,
+                              @Value("${url.mgmt}") String mgmtUrl) {
+    this.testUrl = testUrl;
+    this.mgmtUrl = mgmtUrl;
+  }
 
   public String getTestUrl() {
     return testUrl;

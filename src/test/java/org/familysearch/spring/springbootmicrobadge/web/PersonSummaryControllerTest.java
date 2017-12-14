@@ -1,70 +1,66 @@
 package org.familysearch.spring.springbootmicrobadge.web;
 
-import java.net.URI;
-
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpClientErrorException;
 
 import org.familysearch.spring.springbootmicrobadge.service.PersonSummary;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PersonSummaryControllerTest extends BaseComponent {
-
-  @Rule
-  public ExpectedException thrown = ExpectedException.none();
 
   //Test person summary endpoint
   @Test
   public void getPersonSummaryTest() {
     String personId = createDefaultPersonForTesting();
 
-    ResponseEntity<PersonSummary> entity = getRestTemplate().getForEntity(urlFactoryForTesting.getTestUrl() + "/summary/" + personId, PersonSummary.class);
+    ResponseEntity<PersonSummary> responseEntity = restTemplate
+      .getForEntity("/summary/{personId}", PersonSummary.class, personId);
 
-    assertEquals(HttpStatus.OK, entity.getStatusCode());
-    assertEquals("Bob", entity.getBody().getFirstName());
-    assertEquals("Dole", entity.getBody().getLastName());
+    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(responseEntity.getBody())
+      .hasFieldOrPropertyWithValue("firstName", "Bob")
+      .hasFieldOrPropertyWithValue("lastName", "Dole");
   }
 
   @Test
   public void getPerson_NotFoundTest() {
-    thrown.expect(HttpClientErrorException.class);
-    ResponseEntity<PersonSummary> entity = getRestTemplate().getForEntity(urlFactoryForTesting.getTestUrl() + "/summary/XXXX-XXX", PersonSummary.class);
+    final ResponseEntity<PersonSummary> responseEntity =
+      restTemplate.getForEntity("/summary/{personId}", PersonSummary.class, "XXXX-XXX");
 
-    thrown.expectMessage(String.valueOf(HttpStatus.NOT_FOUND.value()));
+    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
   }
 
   @Test
   public void getPersonCached() {
     //Test dynamo put/get (200)
-
     String personId = createDefaultPersonForTesting();
-    getRestTemplate().getForEntity(urlFactoryForTesting.getTestUrl() + "/summary/" + personId, PersonSummary.class);
+    restTemplate.getForEntity("/summary/{personId}", PersonSummary.class, personId);
 
-    ResponseEntity<PersonSummary> entity = getRestTemplate().getForEntity(urlFactoryForTesting.getTestUrl() + "/summary/" + personId, PersonSummary.class);
+    ResponseEntity<PersonSummary> responseEntity = restTemplate
+      .getForEntity("/summary/{personId}", PersonSummary.class, personId);
+
     // Assert a cache get, not from TF
-
-    assertEquals(HttpStatus.OK, entity.getStatusCode());
-    assertEquals("Bob", entity.getBody().getFirstName());
-    assertEquals("Dole", entity.getBody().getLastName());
+    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(responseEntity.getBody())
+      .hasFieldOrPropertyWithValue("firstName", "Bob")
+      .hasFieldOrPropertyWithValue("lastName", "Dole");
   }
 
   @Test
   public void getPersonAfterDeletion() {
     //Test dynamo put/delete/get (404)
     String personId = createDefaultPersonForTesting();
-    getRestTemplate().getForEntity(urlFactoryForTesting.getTestUrl() + "/summary/" + personId, PersonSummary.class);
+    restTemplate.getForEntity("/summary/{personId}", PersonSummary.class, personId);
 
-    deletePerson(personId);
-    getRestTemplate().delete(URI.create(urlFactoryForTesting.getTestUrl() + "/summary/" + personId));
+    deleteTreePerson(personId);
+    restTemplate.delete("/summary/{personId}", personId);
 
-    thrown.expect(HttpClientErrorException.class);
-    ResponseEntity<PersonSummary> entity = getRestTemplate().getForEntity(urlFactoryForTesting.getTestUrl() + "/summary/" + personId, PersonSummary.class);
-    thrown.expectMessage(String.valueOf(HttpStatus.NOT_FOUND.value()));
+    final ResponseEntity<PersonSummary> getAfterDeleteResponseEntity =
+      restTemplate.getForEntity("/summary/{personId}", PersonSummary.class, personId);
+
+    assertThat(getAfterDeleteResponseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
   }
 
 }

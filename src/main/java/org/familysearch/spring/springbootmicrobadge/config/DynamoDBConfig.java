@@ -1,8 +1,6 @@
 package org.familysearch.spring.springbootmicrobadge.config;
 
-import com.amazonaws.auth.AWSCredentialsProviderChain;
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
-import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
@@ -13,27 +11,19 @@ import org.socialsignin.spring.data.dynamodb.repository.config.EnableDynamoDBRep
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Profile;
 
-/**
- * @author tlindhardt
- */
 @Configuration
 @EnableDynamoDBRepositories(
-    dynamoDBMapperConfigRef = "dynamoDBMapperConfig",
-    basePackages = "org.familysearch.spring")
+  dynamoDBMapperConfigRef = "dynamoDBMapperConfig",
+  basePackages = "org.familysearch.spring")
 public class DynamoDBConfig {
 
-  @Value("${DYNAMODB_TABLE_NAME}")
-  String dynamoDbTableName;
-
-  @Profile("!localhostDynamo")
-  @Bean
-  public AmazonDynamoDB amazonDynamoDB(AWSCredentialsProviderChain provider) {
-    AmazonDynamoDBClient client = new AmazonDynamoDBClient(provider);
-    client.setRegion(Region.getRegion(Regions.fromName("us-east-1")));
-    return client;
+  @Bean(destroyMethod = "shutdown")
+  public AmazonDynamoDB amazonDynamoDB() {
+    return AmazonDynamoDBClient.builder()
+      .withRegion(Regions.US_EAST_1)
+      .withCredentials(new DefaultAWSCredentialsProviderChain())
+      .build();
   }
 
   @Bean
@@ -47,12 +37,10 @@ public class DynamoDBConfig {
   }
 
   @Bean
-  public DynamoDBMapperConfig dynamoDBMapperConfig() {
-    return new DynamoDBMapperConfig((DynamoDBMapperConfig.TableNameResolver) (clazz, config) -> dynamoDbTableName);
+  public DynamoDBMapperConfig dynamoDBMapperConfig(@Value("${DYNAMODB_TABLE_NAME}") String dynamoDbTableName) {
+    return DynamoDBMapperConfig.builder()
+      .withTableNameResolver((clazz, config) -> dynamoDbTableName)
+      .build();
   }
 
-  @Bean
-  public AWSCredentialsProviderChain awsCredentialsProviderChain() {
-    return new DefaultAWSCredentialsProviderChain();
-  }
 }
