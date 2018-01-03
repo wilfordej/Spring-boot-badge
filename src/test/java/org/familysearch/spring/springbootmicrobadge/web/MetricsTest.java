@@ -9,38 +9,35 @@ import org.springframework.http.ResponseEntity;
 
 import org.familysearch.spring.springbootmicrobadge.schema.Metrics;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MetricsTest extends BaseComponent {
 
   @Test
   public void getMetricsTest() {
-    ResponseEntity<Metrics> entity = getRestTemplate().getForEntity(getMetricsUrl(), Metrics.class);
+    ResponseEntity<Metrics> responseEntity = restTemplate.getForEntity(getMetricsUrl(), Metrics.class);
 
-    assertEquals(HttpStatus.OK, entity.getStatusCode());
-    assertTrue(entity.getBody().getMem() > 100);
+    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(responseEntity.getBody().getMem()).isGreaterThan(100);
   }
 
   @Test
   public void getCustomMetricsTest() throws InterruptedException {
     HttpHeaders headers = new HttpHeaders();
     headers.setCacheControl("no-cache");
-    HttpEntity<String> httpEntity = new HttpEntity<String>("parameters", headers);
+    HttpEntity<String> httpEntity = new HttpEntity<>("parameters", headers);
 
-    // ToDo: Fix the weird timing with calling the health and it updating the metrics.
-    ResponseEntity<Metrics> entity = getRestTemplate().getForEntity(getMetricsUrl(), Metrics.class);
-    Long numMetricRequests = entity.getBody().getHelloWorldMetric() == null ? 0 : entity.getBody().getHelloWorldMetric();
-    getRestTemplate().exchange(getHelloWorldUrl(), HttpMethod.GET, httpEntity, String.class);
-    Thread.sleep(500);
-    getRestTemplate().exchange(getHelloWorldUrl(), HttpMethod.GET, httpEntity, String.class);
-    Thread.sleep(500);
-    getRestTemplate().exchange(getHelloWorldUrl(), HttpMethod.GET, httpEntity, String.class);
-    Thread.sleep(500);
+    ResponseEntity<Metrics> responseEntity = restTemplate.getForEntity(getMetricsUrl(), Metrics.class);
 
-    Metrics latestMetrics = getRestTemplate().getForEntity(getMetricsUrl(), Metrics.class).getBody();
-    assertEquals(HttpStatus.OK, entity.getStatusCode());
-    assertTrue(latestMetrics.getHelloWorldMetric() > numMetricRequests);
+    Long numMetricRequests = responseEntity.getBody().getHelloWorldMetric() == null ? 0 : responseEntity.getBody().getHelloWorldMetric();
+    restTemplate.exchange(getHelloWorldUrl(), HttpMethod.GET, httpEntity, String.class);
+    restTemplate.exchange(getHelloWorldUrl(), HttpMethod.GET, httpEntity, String.class);
+    restTemplate.exchange(getHelloWorldUrl(), HttpMethod.GET, httpEntity, String.class);
+
+    ResponseEntity<Metrics> latestMetricsResponseEntity = restTemplate.getForEntity(getMetricsUrl(), Metrics.class);
+
+    assertThat(latestMetricsResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(latestMetricsResponseEntity.getBody().getHelloWorldMetric()).isGreaterThan(numMetricRequests);
   }
 
   private String getMetricsUrl() {

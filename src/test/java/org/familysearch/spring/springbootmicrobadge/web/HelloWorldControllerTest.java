@@ -4,16 +4,15 @@ import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class HelloWorldControllerTest extends BaseComponent {
 
   @Test
   public void getHelloWorld() {
-    ResponseEntity<String> entity = getRestTemplate().getForEntity(urlFactoryForTesting.getTestUrl() + "/hello", String.class);
+    ResponseEntity<String> responseEntity = restTemplate.getForEntity("/hello", String.class);
 
-    assertEquals(HttpStatus.OK, entity.getStatusCode());
-    assertTrue(entity.getBody().contains("Hello!"));
+    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(responseEntity.getBody()).contains("Hello!");
   }
 }

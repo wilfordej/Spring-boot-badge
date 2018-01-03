@@ -6,34 +6,34 @@ import org.springframework.http.ResponseEntity;
 
 import org.familysearch.spring.springbootmicrobadge.schema.Health;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class HealthTest extends BaseComponent {
 
   @Test
   public void getHealthTest() {
-    ResponseEntity<Health> entity = getRestTemplate().getForEntity(getHealthcheckUrl(), Health.class);
-    assertEquals(HttpStatus.OK, entity.getStatusCode());
-    assertEquals("UP", entity.getBody().getStatus());
+    ResponseEntity<Health> responseEntity = restTemplate.getForEntity(getHealthcheckUrl(), Health.class);
+    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(responseEntity.getBody().getStatus()).isEqualTo("UP");
   }
 
   @Test
   public void getDiskSpaceTest() {
-    ResponseEntity<Health> entity = getRestTemplate().getForEntity(getHealthcheckUrl(), Health.class);
-    assertEquals(HttpStatus.OK, entity.getStatusCode());
-    assertEquals("UP", entity.getBody().getDiskSpace().getStatus());
-    assertTrue(entity.getBody().getDiskSpace().getFree() > 100);
-    assertTrue(entity.getBody().getDiskSpace().getTotal() > 100);
+    ResponseEntity<Health> responseEntity = restTemplate.getForEntity(getHealthcheckUrl(), Health.class);
+
+    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(responseEntity.getBody().getDiskSpace().getStatus()).isEqualTo("UP");
+    assertThat(responseEntity.getBody().getDiskSpace().getFree()).isGreaterThan(100);
+    assertThat(responseEntity.getBody().getDiskSpace().getTotal()).isGreaterThan(100);
   }
 
   @Test
   public void getDynamoDbHealth() {
-    ResponseEntity<Health> entity = getRestTemplate().getForEntity(getHealthcheckUrl(), Health.class);
-    assertEquals(HttpStatus.OK, entity.getStatusCode());
-    assertEquals("UP", entity.getBody().getDynamo().getStatus().getCode());
-    assertTrue(entity.getBody().getDynamo().getItemCount() >= 0);
-    assertTrue(entity.getBody().getDynamo().getTableSizeInBytes() >= 0);
+    ResponseEntity<Health> responseEntity = restTemplate.getForEntity(getHealthcheckUrl(), Health.class);
+    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(responseEntity.getBody().getDynamo().getStatus().getCode()).isEqualTo("UP");
+    assertThat(responseEntity.getBody().getDynamo().getItemCount()).isGreaterThanOrEqualTo(0);
+    assertThat(responseEntity.getBody().getDynamo().getTableSizeInBytes()).isGreaterThanOrEqualTo(0);
   }
 
   private String getHealthcheckUrl() {

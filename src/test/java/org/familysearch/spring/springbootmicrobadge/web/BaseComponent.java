@@ -1,21 +1,17 @@
 package org.familysearch.spring.springbootmicrobadge.web;
 
-import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit4.SpringRunner;
 
-import org.familysearch.spring.springbootmicrobadge.ApplicationTestConfig;
 import org.familysearch.spring.springbootmicrobadge.UrlFactoryForTesting;
 import org.familysearch.tf.jsonbind.TfNamePartType;
 import org.familysearch.tf.jsonbind.dto.TfNameForm;
@@ -23,32 +19,29 @@ import org.familysearch.tf.jsonbind.dto.TfNamePart;
 import org.familysearch.tf.jsonbind.dto.TfPerson;
 import org.familysearch.tf.jsonbind.dto.TfPersonSummary;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@ContextConfiguration(classes = {ApplicationTestConfig.class})
+@TestPropertySource(properties = {
+  "url.base=http://localhost:8080",
+  "url.test=http://localhost:8080",
+  "url.mgmt=http://localhost:9000"
+})
 @Ignore
 public class BaseComponent {
 
   @Autowired
-  RestTemplateBuilder restTemplateBuilder;
+  TestRestTemplate restTemplate;
 
   @Autowired
   UrlFactoryForTesting urlFactoryForTesting;
 
-  private RestTemplate restTemplate;
-
-  @Before
-  public void setup() {
-    restTemplate = restTemplateBuilder.build();
-  }
-
   String createDefaultPersonForTesting() {
-    ResponseEntity<String> response = restTemplate.postForEntity(urlFactoryForTesting.getBaseUrl() + "/tf/person", createTfPerson("Bob", "Dole"), String.class);
+    ResponseEntity<String> response = restTemplate.postForEntity("/tf/person", createTfPerson("Bob", "Dole"), String.class);
     return response.getHeaders().get("X-Entity-ID").get(0);
   }
 
-  void deletePerson(String personId) {
-    restTemplate.delete(URI.create(urlFactoryForTesting.getBaseUrl() + "/tf/person/" + personId));
+  void deleteTreePerson(String personId) {
+    restTemplate.delete("/tf/person/{personId}", personId);
   }
 
   private TfPerson createTfPerson(String firstName, String lastName) {
@@ -85,8 +78,5 @@ public class BaseComponent {
     return givenPart;
   }
 
-  public RestTemplate getRestTemplate() {
-    return restTemplate;
-  }
 }
 
