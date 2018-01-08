@@ -42,7 +42,7 @@ public class Metrics {
     this.httpSessionsActive = httpSessionsActive;
   }
 
-  @JsonProperty("counter.hello.world.metric")
+  @JsonProperty("counter.status.200.hello")
   public Long getHelloWorldMetric() {
     return helloWorldMetric;
   }
