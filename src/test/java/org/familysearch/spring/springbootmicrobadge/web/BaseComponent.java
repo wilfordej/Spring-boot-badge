@@ -35,7 +35,7 @@ public class BaseComponent {
   @Autowired
   UrlFactoryForTesting urlFactoryForTesting;
 
-  String createDefaultPersonForTesting() {
+  public String createDefaultPersonForTesting() {
     ResponseEntity<String> response = restTemplate.postForEntity("/tf/person", createTfPerson("Bob", "Dole"), String.class);
     return response.getHeaders().get("X-Entity-ID").get(0);
   }

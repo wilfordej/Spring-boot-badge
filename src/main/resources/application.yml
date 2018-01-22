@@ -15,8 +15,6 @@ logging:
       apache:
         commons:
           dbcp2: DEBUG
-  pattern:
-#    console: '%d{yyyy-mm-dd HH:mm:ss.SSS} %-5level [%thread] --- %logger{15} : %msg%n'
 
 # https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-monitoring.html
 management:
@@ -27,22 +25,8 @@ management:
 # https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-endpoints.html
 endpoints:
   enabled: false
-
   health:
     enabled: true
-    path: /healthcheck/heartbeat
-  info:
-    enabled: true
-  metrics:
-    enabled: true
-  loggers:
-    enabled: true
-
-info:
-  app:
-    name: @project.artifactId@
-    description: @project.description@
-    version: @project.version@
 
 ---
 

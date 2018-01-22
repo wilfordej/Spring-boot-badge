@@ -27,15 +27,6 @@ public class HealthTest extends BaseComponent {
     assertThat(responseEntity.getBody().getDiskSpace().getTotal()).isGreaterThan(100);
   }
 
-  @Test
-  public void getDynamoDbHealth() {
-    ResponseEntity<Health> responseEntity = restTemplate.getForEntity(getHealthcheckUrl(), Health.class);
-    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-    assertThat(responseEntity.getBody().getDynamo().getStatus().getCode()).isEqualTo("UP");
-    assertThat(responseEntity.getBody().getDynamo().getItemCount()).isGreaterThanOrEqualTo(0);
-    assertThat(responseEntity.getBody().getDynamo().getTableSizeInBytes()).isGreaterThanOrEqualTo(0);
-  }
-
   private String getHealthcheckUrl() {
     return urlFactoryForTesting.getMgmtUrl() + "/healthcheck/heartbeat";
   }

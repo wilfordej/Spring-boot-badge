@@ -16,6 +16,7 @@ public class InfoTest extends BaseComponent {
 
     assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(responseEntity.getBody().getInfoDetails())
+      .as("Spring-Boot Microbadge info details should be present")
       .hasFieldOrPropertyWithValue("name", "spring-boot-microbadge")
       .hasFieldOrPropertyWithValue("description", "Demo project for Spring Boot")
       .hasFieldOrPropertyWithValue("version", "0.0.1-SNAPSHOT");

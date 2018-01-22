@@ -12,7 +12,11 @@ public class HelloWorldControllerTest extends BaseComponent {
   public void getHelloWorld() {
     ResponseEntity<String> responseEntity = restTemplate.getForEntity("/hello", String.class);
 
-    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-    assertThat(responseEntity.getBody()).contains("Hello!");
+    assertThat(responseEntity.getStatusCode())
+        .as("Make sure you have the @RestController configured properly")
+        .isEqualTo(HttpStatus.OK);
+    assertThat(responseEntity.getBody())
+        .as("Make sure are returning the proper value 'Hello!'")
+        .contains("Hello!");
   }
 }
