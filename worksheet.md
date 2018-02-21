@@ -43,7 +43,7 @@ To begin, we will jump-start by creating an initial maven project with a Spring 
     * To stop the application press CTRL-C in the terminal window running the DemoApplication.
 * Congrats! You have successfully created and run your first spring-boot application using tools from the Spring-Boot web site. :)
 
-##1. Hello World!
+## 1. Hello World!
 * Now that you have shown you can launch and stop a Spring Boot app, let's move on to our micro-badge project.
 * Following the instructions in the [README.md](README.md), you should have forked the [fs-eng/spring-boot-microbadge](https://github.com/fs-eng/spring-boot-microbadge) project.
   * If you have not done so, do it now so you have a local copy of the microbadge project.
@@ -55,7 +55,7 @@ To begin, we will jump-start by creating an initial maven project with a Spring 
 * Find the HelloWorldController code and insert the @RestController annotation above the @RequestMapping (already included) and run the HelloWorldControllerTest again.
 * Notice the new failure. Modify the HelloWorldController to make the test pass.
     
-##2. Is It Healthy?
+## 2. Is It Healthy?
 * Run _HealthTest_ - it should fail, not finding the /healthcheck/heartbeat endpoint.
 * Notice the following dependency in the pom.xml:
 
@@ -78,7 +78,7 @@ To begin, we will jump-start by creating an initial maven project with a Spring 
   * Hint: If the app is running in a command window, you may need to stop it prior to running the test from IntelliJ.
 * We will come back to adding in your own HealthIndicator in step 6.
 
-##3. Lets Talk!
+## 3. Lets Talk!
 * In this section we leverage RestTemplate to add capabilities to our simple app.
 * Please review [The Guide to RestTemplate](http://www.baeldung.com/rest-template) (http://www.baeldung.com/rest-template) to better understand it's capbilities.
 * Run _TfPersonClientTest_ - it should fail, because the client is not yet calling to Tree Foundation (TF).
@@ -101,7 +101,7 @@ To begin, we will jump-start by creating an initial maven project with a Spring 
     >     }
 * Re-run _TfPersonClientTest_ and verify the test passes
 
-##4. Wrappers Add Value!
+## 4. Wrappers Add Value!
 * Run the tests in _PersonSummaryControllerTest_ class - _getPersonSummaryTest_ should fail.
 * Add in the necessary @RestController and @RequestMapping annotations so that you create a "summary" endpoint in _PersonSummaryController_
 * Add the following annotation onto the "getPersonSummary":
@@ -120,7 +120,7 @@ To begin, we will jump-start by creating an initial maven project with a Spring 
     >     return personSummaryMapper.map(person);
 * Re-run the tests in _PersonSummaryControllerTest_ class. All tests should now be passing.     
 
-##5. Why Make Multiple Calls?
+## 5. Why Make Multiple Calls?
 * Run the tests in _PersonSummaryControllerWithCachingTest_ class. All tests should fail.     
 * Add the following annotation to the _PersonSummaryService_ class's _getOrCalculate_ method:
     >     @Cacheable(value="personSummaryCache", key="#personId", unless="#result == null")
@@ -136,7 +136,7 @@ To begin, we will jump-start by creating an initial maven project with a Spring 
     >     personSummaryCache.evict(personId);    
 * Run _PersonSummaryControllerWithCachingTest_ tests again, and verify that all the tests are now passing.
 
-##6. Application Healthcheck Expanded!
+## 6. Application Healthcheck Expanded!
 * Run tests for _DynamoDbHealthTest_ - tests should fail.
 * Startup the app, then use a browser to load: [http://localhost:9000/healthcheck/heartbeat](http://localhost:9000/healthcheck/heartbeat) and notice the status and diskSpace information
 * Open _DynamoHealthIndicator_ and make it a bean by adding the @Component annotation
@@ -162,7 +162,7 @@ To begin, we will jump-start by creating an initial maven project with a Spring 
 * Restart the app, and again use a browser to load: [http://localhost:9000/healthcheck/heartbeat](http://localhost:9000/healthcheck/heartbeat) and notice the new dynamodb information
 * Run the tests for _DynamoDbHealthTest_ - tests should now succeed.
 
-##7. Let's Count!
+## 7. Let's Count!
 * Spring actuators have built in metrics. These can be extended, but let's just take a look at what comes out of the box
 * Enable the metrics endpoint by adding the following under the _endpoint:_ in the application.yml file:
     >       metrics:
@@ -172,7 +172,7 @@ To begin, we will jump-start by creating an initial maven project with a Spring 
 * Load [http://localhost:8080/hello](http://localhost:8080/hello), and then go back and refresh the metrics url. You should see some new "hello" metrics (ie. "counter.status.200.hello")
 * Run _MetricsTest_ - tests should all be passing.
     
-##8. What Kind Of App Is This?
+## 8. What Kind Of App Is This?
 * Springboot actuators also have a built in info section that can easily be extended.
 * Enable the info endpoint by adding following to application.yml under the _endpoint:_ configuration:
     >       info:
