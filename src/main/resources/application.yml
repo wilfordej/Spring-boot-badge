@@ -27,6 +27,18 @@ endpoints:
   enabled: false
   health:
     enabled: true
+    path: /healthcheck/heartbeat
+  metrics:
+    enabled: true
+  info:
+    enabled: true
+
+info:
+   app:
+     name: @project.artifactId@
+     description: @project.description@
+     version: @project.version@
+
 
 ---
 

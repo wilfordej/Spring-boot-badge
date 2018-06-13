@@ -1,7 +1,10 @@
 package org.familysearch.spring.springbootmicrobadge.service;
 
+import org.springframework.stereotype.Component;
+
 import org.familysearch.tf.jsonbind.dto.TfPerson;
 
+@Component
 public class PersonSummaryMapper {
 
   public PersonSummary map(TfPerson tfPerson) {
