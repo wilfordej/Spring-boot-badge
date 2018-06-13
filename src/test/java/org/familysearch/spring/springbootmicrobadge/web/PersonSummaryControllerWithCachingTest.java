@@ -21,11 +21,11 @@ public class PersonSummaryControllerWithCachingTest extends BaseComponent {
 
     long cacheHits = personSummaryCache.getCacheHits();
 
-    restTemplate.getForEntity("/summary/{personId}", PersonSummary.class, personId);
+    testRestTemplate.getForEntity("/summary/{personId}", PersonSummary.class, personId);
 
     assertThat(personSummaryCache.getCacheHits()).isEqualTo(cacheHits);
 
-    ResponseEntity<PersonSummary> responseEntity = restTemplate
+    ResponseEntity<PersonSummary> responseEntity = testRestTemplate
         .getForEntity("/summary/{personId}", PersonSummary.class, personId);
 
     assertThat(personSummaryCache.getCacheHits()).isEqualTo(cacheHits + 1);
@@ -42,17 +42,17 @@ public class PersonSummaryControllerWithCachingTest extends BaseComponent {
 
     long cacheSize = personSummaryCache.getCacheSize();
 
-    restTemplate.getForEntity("/summary/{personId}", PersonSummary.class, personId);
+    testRestTemplate.getForEntity("/summary/{personId}", PersonSummary.class, personId);
 
     assertThat(personSummaryCache.getCacheSize()).isGreaterThan(cacheSize);
 
     deleteTreePerson(personId);
-    restTemplate.delete("/summary/{personId}", personId);
+    testRestTemplate.delete("/summary/{personId}", personId);
 
     assertThat(personSummaryCache.getCacheSize()).isEqualTo(cacheSize);
 
     final ResponseEntity<PersonSummary> getAfterDeleteResponseEntity =
-        restTemplate.getForEntity("/summary/{personId}", PersonSummary.class, personId);
+        testRestTemplate.getForEntity("/summary/{personId}", PersonSummary.class, personId);
 
     assertThat(getAfterDeleteResponseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
   }

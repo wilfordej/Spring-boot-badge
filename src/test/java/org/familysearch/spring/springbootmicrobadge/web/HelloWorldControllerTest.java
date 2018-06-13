@@ -10,7 +10,7 @@ public class HelloWorldControllerTest extends BaseComponent {
 
   @Test
   public void getHelloWorld() {
-    ResponseEntity<String> responseEntity = restTemplate.getForEntity("/hello", String.class);
+    ResponseEntity<String> responseEntity = testRestTemplate.getForEntity("/hello", String.class);
 
     assertThat(responseEntity.getStatusCode())
         .as("Make sure you have the @RestController configured properly")

@@ -12,14 +12,14 @@ public class HealthTest extends BaseComponent {
 
   @Test
   public void getHealthTest() {
-    ResponseEntity<Health> responseEntity = restTemplate.getForEntity(getHealthcheckUrl(), Health.class);
+    ResponseEntity<Health> responseEntity = testRestTemplate.getForEntity(getHealthcheckUrl(), Health.class);
     assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(responseEntity.getBody().getStatus()).isEqualTo("UP");
   }
 
   @Test
   public void getDiskSpaceTest() {
-    ResponseEntity<Health> responseEntity = restTemplate.getForEntity(getHealthcheckUrl(), Health.class);
+    ResponseEntity<Health> responseEntity = testRestTemplate.getForEntity(getHealthcheckUrl(), Health.class);
 
     assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(responseEntity.getBody().getDiskSpace().getStatus()).isEqualTo("UP");

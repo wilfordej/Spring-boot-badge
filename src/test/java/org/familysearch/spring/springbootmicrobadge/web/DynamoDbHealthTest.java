@@ -12,7 +12,7 @@ public class DynamoDbHealthTest extends BaseComponent {
 
   @Test
   public void getDynamoDbHealth() {
-    ResponseEntity<Health> responseEntity = restTemplate.getForEntity(getHealthcheckUrl(), Health.class);
+    ResponseEntity<Health> responseEntity = testRestTemplate.getForEntity(getHealthcheckUrl(), Health.class);
     assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(responseEntity.getBody().getDynamo())
      .as("dynamodb information should be present in the healthcheck")
