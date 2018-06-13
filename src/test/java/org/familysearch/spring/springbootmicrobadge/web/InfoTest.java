@@ -12,7 +12,7 @@ public class InfoTest extends BaseComponent {
 
   @Test
   public void getInfoTest() {
-    ResponseEntity<Info> responseEntity = restTemplate.getForEntity(getInfoUrl(), Info.class);
+    ResponseEntity<Info> responseEntity = testRestTemplate.getForEntity(getInfoUrl(), Info.class);
 
     assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(responseEntity.getBody().getInfoDetails())

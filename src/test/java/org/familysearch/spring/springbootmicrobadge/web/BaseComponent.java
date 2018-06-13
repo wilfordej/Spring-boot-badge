@@ -30,18 +30,18 @@ import org.familysearch.tf.jsonbind.dto.TfPersonSummary;
 public class BaseComponent {
 
   @Autowired
-  TestRestTemplate restTemplate;
+  TestRestTemplate testRestTemplate;
 
   @Autowired
   UrlFactoryForTesting urlFactoryForTesting;
 
   public String createDefaultPersonForTesting() {
-    ResponseEntity<String> response = restTemplate.postForEntity("/tf/person", createTfPerson("Bob", "Dole"), String.class);
+    ResponseEntity<String> response = testRestTemplate.postForEntity("/tf/person", createTfPerson("Bob", "Dole"), String.class);
     return response.getHeaders().get("X-Entity-ID").get(0);
   }
 
   void deleteTreePerson(String personId) {
-    restTemplate.delete("/tf/person/{personId}", personId);
+    testRestTemplate.delete("/tf/person/{personId}", personId);
   }
 
   private TfPerson createTfPerson(String firstName, String lastName) {

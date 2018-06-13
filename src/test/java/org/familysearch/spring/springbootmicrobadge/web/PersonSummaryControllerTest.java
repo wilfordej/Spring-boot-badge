@@ -19,7 +19,7 @@ public class PersonSummaryControllerTest extends BaseComponent {
   public void getPersonSummaryTest() {
     String personId = createDefaultPersonForTesting();
 
-    ResponseEntity<PersonSummary> responseEntity = restTemplate
+    ResponseEntity<PersonSummary> responseEntity = testRestTemplate
       .getForEntity("/summary/{personId}", PersonSummary.class, personId);
 
     assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -31,7 +31,7 @@ public class PersonSummaryControllerTest extends BaseComponent {
   @Test
   public void getPerson_NotFoundTest() {
     final ResponseEntity<PersonSummary> responseEntity =
-      restTemplate.getForEntity("/summary/{personId}", PersonSummary.class, "XXXX-XXX");
+      testRestTemplate.getForEntity("/summary/{personId}", PersonSummary.class, "XXXX-XXX");
 
     assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
   }
